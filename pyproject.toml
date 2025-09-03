@@ -29,6 +29,7 @@ httpx = "^0.28.1"
 ruff = "^0.12.11"
 mypy = "^1.17.1"
 black = "^25.1.0"
+types-requests = "^2.32.4.20250809"
 
 [tool.ruff]
 target-version = "py311"

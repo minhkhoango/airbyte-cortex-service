@@ -19,7 +19,7 @@ def calculate_semantic_similarity(chunks: list[str]) -> list[float | None]:
     if len(chunks) < 2:
         return [None] * len(chunks)
 
-    embeddings: NDArray[np.float64] = MODEL.encode(chunks, convert_to_numpy=True)  # type: ignore
+    embeddings = MODEL.encode(chunks, convert_to_numpy=True)
 
     similarities: list[float | None] = []
     for i in range(len(chunks) - 1):
