@@ -17,9 +17,25 @@ def chunk_by_fixed_size(text: str, chunk_size: int, chunk_overlap: int) -> List[
     if chunk_size <= 0:
         raise ValueError("chunk_size must be a positive integer.")
     
+    if not text:
+        return []
+    
     chunks: List[str] = []
-    for i in range(0, len(text), chunk_size - chunk_overlap):
+    
+    # Calculate the step size for moving through the text
+    step_size = chunk_size - chunk_overlap
+    
+    # When step_size <= 0 (overlap >= chunk_size), move by 1 to avoid infinite loops
+    if step_size <= 0:
+        step_size = 1
+    
+    i = 0
+    while i < len(text):
+        # Create chunk from current position
         chunk = text[i:i + chunk_size]
-        if chunk:
-            chunks.append(chunk)
+        chunks.append(chunk)
+        
+        # Move to next position
+        i += step_size
+    
     return chunks

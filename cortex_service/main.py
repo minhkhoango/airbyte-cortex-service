@@ -1,17 +1,24 @@
 # Pylance strict mode
 from fastapi import FastAPI, Depends, status
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 from typing import Any, Dict
 
 from .api_models import DocumentProcessRequest, DocumentProcessResponse, ErrorDetail
 from .security import get_api_key
 from . import services
+from .loggin_config import configure_logging
+
+configure_logging()
 
 app = FastAPI(
     title="Airbyte Cortex Service",
     description="A service for intelligent, in-flight pre-processing of unstructured data.",
     version="1.0.0",
 )
+
+# Add this line to expose the /metrics endpoint
+Instrumentator().instrument(app).expose(app)
 
 # --- Endpoints ---
 
