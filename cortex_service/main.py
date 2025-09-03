@@ -5,6 +5,7 @@ from typing import Any, Dict
 
 from .api_models import DocumentProcessRequest, DocumentProcessResponse, ErrorDetail
 from .security import get_api_key
+from . import services
 
 app = FastAPI(
     title="Airbyte Cortex Service",
@@ -25,6 +26,7 @@ async def health_check() -> Dict[str, str]:
     tags=["Processing"],
     responses={
         401: {"model": ErrorDetail},
+        422: {"model": ErrorDetail},
         500: {"model": ErrorDetail},
     },
 )
@@ -37,12 +39,15 @@ async def process_document(
     Processes a single unstructured document, chunks it intelligently,
     and returns AI-ready, semantically coherent chunks.
     """
-    # Placeholder for Day 4 logic.
-    # We will replace this with a call to the real processing service.
-    return JSONResponse(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        content={
-            "error_code": 5001,
-            "message": "Processing logic not yet implemented.",
-        },
-    )
+    try:
+        response = services.process_document_logic(request)
+        return response
+    except Exception as e:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "error_code": 5000,
+                "message": "An internal error occurred during processing.",
+                "details": str(e),
+            },
+        )
