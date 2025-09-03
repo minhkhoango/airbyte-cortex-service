@@ -1,7 +1,6 @@
 # Pylance strict mode
 import time
 import uuid
-from typing import List
 
 from . import chunking, validation
 from .api_models import (
@@ -12,6 +11,7 @@ from .api_models import (
     DocumentProcessResponse,
     ProcessingMetrics,
 )
+
 
 def process_document_logic(request: DocumentProcessRequest) -> DocumentProcessResponse:
     """
@@ -33,12 +33,12 @@ def process_document_logic(request: DocumentProcessRequest) -> DocumentProcessRe
     else:
         # This case should ideally be caught by Pydantic, but defensive coding is good.
         raise ValueError(f"Unknown chunking strategy: {strategy.name}")
-    
+
     # 2. Perform semantic validation
     similarities = validation.calculate_semantic_similarity(chunks_text)
 
     # 3. Format the response chunks
-    response_chunks: List[Chunk] = []
+    response_chunks: list[Chunk] = []
     for i, text in enumerate(chunks_text):
         chunk = Chunk(
             chunk_id=str(uuid.uuid4()),
@@ -47,13 +47,11 @@ def process_document_logic(request: DocumentProcessRequest) -> DocumentProcessRe
             metadata=ChunkMetadata(
                 parent_document_id=request.document_id,
                 original_metadata=request.metadata,
-                validation=ChunkValidation(
-                    similarity_with_next_chunk=similarities[i]
-                )
-            )
+                validation=ChunkValidation(similarity_with_next_chunk=similarities[i]),
+            ),
         )
         response_chunks.append(chunk)
-    
+
     end_time = time.monotonic()
     processing_time_ms = int((end_time - start_time) * 1000)
 
@@ -62,6 +60,6 @@ def process_document_logic(request: DocumentProcessRequest) -> DocumentProcessRe
         chunks=response_chunks,
         metrics=ProcessingMetrics(
             processing_time_ms=processing_time_ms,
-            total_chunks_produced=len(response_chunks)
-        )
+            total_chunks_produced=len(response_chunks),
+        ),
     )

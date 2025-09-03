@@ -1,13 +1,14 @@
 # Pylance strict mode
-from fastapi import FastAPI, Depends, status
+from typing import Any
+
+from fastapi import Depends, FastAPI, status
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
-from typing import Any, Dict
 
-from .api_models import DocumentProcessRequest, DocumentProcessResponse, ErrorDetail
-from .security import get_api_key
 from . import services
+from .api_models import DocumentProcessRequest, DocumentProcessResponse, ErrorDetail
 from .loggin_config import configure_logging
+from .security import get_api_key
 
 configure_logging()
 
@@ -22,10 +23,12 @@ Instrumentator().instrument(app).expose(app)
 
 # --- Endpoints ---
 
+
 @app.get("/health", tags=["Health"])
-async def health_check() -> Dict[str, str]:
+async def health_check() -> dict[str, str]:
     """Health check endpoint to verify the service is running."""
     return {"status": "ok"}
+
 
 @app.post(
     "/api/v1/sync",
@@ -37,7 +40,6 @@ async def health_check() -> Dict[str, str]:
         500: {"model": ErrorDetail},
     },
 )
-
 async def process_document(
     request: DocumentProcessRequest,
     api_key: str = Depends(get_api_key),

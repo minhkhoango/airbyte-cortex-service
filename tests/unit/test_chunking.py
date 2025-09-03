@@ -1,6 +1,7 @@
 # Pylance strict mode
-from cortex_service.chunking import chunk_by_paragraph, chunk_by_fixed_size
 import pytest
+
+from cortex_service.chunking import chunk_by_fixed_size, chunk_by_paragraph
 
 
 class TestChunkByParagraph:
@@ -175,9 +176,9 @@ class TestChunkByFixedSize:
         # step_size = 3-1 = 2, so positions: 0, 2, 4, 6
         assert len(chunks) == 4
         assert chunks[0] == "   "  # pos 0-2
-        assert chunks[1] == " \t\n"  # pos 2-4 
+        assert chunks[1] == " \t\n"  # pos 2-4
         assert chunks[2] == "\n  "  # pos 4-6
-        assert chunks[3] == " "     # pos 6-6 (partial)
+        assert chunks[3] == " "  # pos 6-6 (partial)
 
     def test_chunk_by_fixed_size_zero_chunk_size(self) -> None:
         """Tests that zero chunk_size raises ValueError."""

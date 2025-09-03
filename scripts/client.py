@@ -3,7 +3,7 @@
 
 import json
 import os
-from typing import Any, Dict, List, cast
+from typing import Any, cast
 
 import requests
 from dotenv import load_dotenv
@@ -40,6 +40,7 @@ Using multi-stage builds allows you to drastically reduce your final image
 size, separating build-time dependencies from runtime dependencies.
 """
 
+
 def run_sync_simulation() -> None:
     """
     Simulates an Airbyte sync by sending a document to the Cortex service
@@ -52,12 +53,12 @@ def run_sync_simulation() -> None:
         print("Error: CORTEX_API_KEY not found in .env file. Aborting.")
         return
 
-    headers: Dict[str, str] = {
+    headers: dict[str, str] = {
         "Content-Type": "application/json",
         "X-API-Key": API_KEY,
     }
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "document_id": "doc-dockerfile-best-practice-001",
         "content": SAMPLE_TECHNICAL_DOC,
         "metadata": {"source_file": "docs/deployment.md", "author": "admin"},
@@ -77,11 +78,13 @@ def run_sync_simulation() -> None:
 
     print(f"[2] Received successful response (Status {response.status_code})")
 
-    response_data: Dict[str, Any] = response.json()
-    chunks: List[Dict[str, Any]] = cast(List[Dict[str, Any]], response_data.get("chunks", []))
-    metrics: Dict[str, Any] = cast(Dict[str, Any], response_data.get("metrics", {}))
+    response_data: dict[str, Any] = response.json()
+    chunks: list[dict[str, Any]] = cast(
+        list[dict[str, Any]], response_data.get("chunks", [])
+    )
+    metrics: dict[str, Any] = cast(dict[str, Any], response_data.get("metrics", {}))
 
-    print(f"\n--- Emitting AirbyteRecordMessages (Simulated) ---")
+    print("\n--- Emitting AirbyteRecordMessages (Simulated) ---")
     print(f"Total Chunks Produced: {metrics.get('total_chunks_produced', 'N/A')}")
     print(f"Processing Time: {metrics.get('processing_time_ms', 'N/A')}ms")
     print("-" * 50)
