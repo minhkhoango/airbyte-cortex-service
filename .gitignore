@@ -10,3 +10,6 @@ venv/
 
 # Testing
 .pytest_cache/
+
+# Secrets
+.env
