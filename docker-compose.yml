@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  cortex-service:
+    build: .
+    ports:
+      - "8000:8000"
+    # This line securely loads the .env file into the container's environment
+    env_file:
+      - .env
+    # Optional: for local development, mount the code to see changes live
+    # volumes:
+    #   - ./cortex_service:/app/cortex_service

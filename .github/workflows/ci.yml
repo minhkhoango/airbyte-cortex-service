@@ -1,0 +1,42 @@
+# .github/workflows/ci.yml
+
+name: CI Pipeline
+
+# Run this workflow on every push to any branch
+on: [push]
+
+jobs:
+  build_and_test:
+    # Use the latest version of Ubuntu as the runner environment
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the specific Python version we need
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install Poetry for dependency management
+      - name: Install Poetry
+        run: pipx install poetry
+
+      # Step 4: Install the project's dependencies using the poetry.lock file
+      - name: Install dependencies
+        run: poetry install
+
+      # Step 5: Run the linter (Ruff) to check for code style and errors
+      - name: Run linter (Ruff)
+        run: poetry run ruff check .
+
+      # Step 6: Run the type checker (MyPy) to ensure type safety
+      - name: Run type checker (MyPy)
+        run: poetry run mypy . --strict
+
+      # Step 7: Run the automated tests (Pytest)
+      - name: Run tests (Pytest)
+        run: poetry run pytest
