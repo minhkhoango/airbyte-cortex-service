@@ -7,6 +7,12 @@ services:
     # This line securely loads the .env file into the container's environment
     env_file:
       - .env
+    # Persist Hugging Face model cache between container restarts
+    volumes:
+      - hf_cache:/app/.cache/huggingface
     # Optional: for local development, mount the code to see changes live
     # volumes:
     #   - ./cortex_service:/app/cortex_service
+
+volumes:
+  hf_cache:

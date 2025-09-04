@@ -1,4 +1,7 @@
 # Pylance strict mode
+import json
+from typing import Any
+
 from fastapi import Depends, FastAPI, status
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -16,10 +19,24 @@ from .security import get_api_key
 
 configure_logging()
 
+
+# Custom JSON response class that pretty-prints by default
+class PrettyJSONResponse(JSONResponse):
+    def render(self, content: Any) -> bytes:
+        return json.dumps(
+            content,
+            ensure_ascii=False,
+            allow_nan=False,
+            indent=2,
+            separators=(",", ": "),
+        ).encode("utf-8")
+
+
 app = FastAPI(
     title="Airbyte Cortex Service",
     description="A service for intelligent, in-flight pre-processing of unstructured data.",
     version="1.0.0",
+    default_response_class=PrettyJSONResponse,
 )
 
 # Add this line to expose the /metrics endpoint
