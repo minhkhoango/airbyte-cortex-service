@@ -76,13 +76,19 @@ def test_sync_batch_e2e_success() -> None:
             {
                 "document_id": "doc1",
                 "content": "This is the first document with enough content to meet the minimum chunk size requirement for paragraph chunking strategy.",
-                "chunking_strategy": {"name": "paragraph", "params": {"min_chunk_size": 10}}
+                "chunking_strategy": {
+                    "name": "paragraph",
+                    "params": {"min_chunk_size": 10},
+                },
             },
             {
                 "document_id": "doc2",
                 "content": "Second document, paragraph one.\n\nSecond document, paragraph two.",
-                "chunking_strategy": {"name": "paragraph", "params": {"min_chunk_size": 10}}
-            }
+                "chunking_strategy": {
+                    "name": "paragraph",
+                    "params": {"min_chunk_size": 10},
+                },
+            },
         ]
     }
     response = client.post("/api/v1/sync-batch", headers=headers, json=payload)

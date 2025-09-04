@@ -1,18 +1,17 @@
 # Pylance strict mode
 import time
 import uuid
-from typing import List
 
 from . import chunking, validation
 from .api_models import (
+    BatchProcessRequest,
+    BatchProcessResponse,
     Chunk,
     ChunkMetadata,
     ChunkValidation,
     DocumentProcessRequest,
     DocumentProcessResponse,
     ProcessingMetrics,
-    BatchProcessRequest,
-    BatchProcessResponse
 )
 
 
@@ -67,16 +66,14 @@ def process_document_logic(request: DocumentProcessRequest) -> DocumentProcessRe
         ),
     )
 
+
 def process_documents_batch_logic(request: BatchProcessRequest) -> BatchProcessResponse:
     """Orchestrates the batch processing of multiple documents."""
-    results: List[DocumentProcessResponse] = []
+    results: list[DocumentProcessResponse] = []
     for doc in request.documents:
         # For the MVP, we process sequentially.
         # A future optimization could use asyncio for concurrent processing.
         result = process_document_logic(doc)
         results.append(result)
 
-    return BatchProcessResponse(
-        results=results,
-        total_documents_processed=len(results)
-    )
+    return BatchProcessResponse(results=results, total_documents_processed=len(results))

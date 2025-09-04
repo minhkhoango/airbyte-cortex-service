@@ -5,11 +5,11 @@ from prometheus_fastapi_instrumentator import Instrumentator
 
 from . import services
 from .api_models import (
-    DocumentProcessRequest, 
-    DocumentProcessResponse, 
-    ErrorDetail,
     BatchProcessRequest,
-    BatchProcessResponse
+    BatchProcessResponse,
+    DocumentProcessRequest,
+    DocumentProcessResponse,
+    ErrorDetail,
 )
 from .loggin_config import configure_logging
 from .security import get_api_key
@@ -65,6 +65,7 @@ async def process_document(
             },
         )
 
+
 @app.post(
     "/api/v1/sync-batch",
     response_model=BatchProcessResponse,
@@ -76,9 +77,8 @@ async def process_document(
     },
 )
 async def process_document_batch(
-    request: BatchProcessRequest,
-    api_key: str = Depends(get_api_key)
-)-> BatchProcessResponse | JSONResponse:
+    request: BatchProcessRequest, api_key: str = Depends(get_api_key)
+) -> BatchProcessResponse | JSONResponse:
     """
     Processes a batch of unstructured documents in a single request.
     """

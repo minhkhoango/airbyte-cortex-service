@@ -1,5 +1,5 @@
 # Pylance strict mode
-from typing import Any, Literal, List
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -98,10 +98,12 @@ class ErrorDetail(BaseModel):
 
 class BatchProcessRequest(BaseModel):
     """Request body for the /sync-batch endpoint."""
-    documents: List[DocumentProcessRequest]
+
+    documents: list[DocumentProcessRequest]
 
 
 class BatchProcessResponse(BaseModel):
     """Response body for the /sync-batch endpoint."""
-    results: List[DocumentProcessResponse]
+
+    results: list[DocumentProcessResponse]
     total_documents_processed: int
