@@ -66,3 +66,34 @@ def test_sync_e2e_paragraph_chunking_success() -> None:
         "similarity_with_next_chunk"
         in response_data["chunks"][0]["metadata"]["validation"]
     )
+
+
+def test_sync_batch_e2e_success() -> None:
+    """Tests a successful batch request with multiple documents."""
+    headers = {"X-API-Key": API_KEY}
+    payload = {
+        "documents": [
+            {
+                "document_id": "doc1",
+                "content": "This is the first document with enough content to meet the minimum chunk size requirement for paragraph chunking strategy.",
+                "chunking_strategy": {"name": "paragraph", "params": {"min_chunk_size": 10}}
+            },
+            {
+                "document_id": "doc2",
+                "content": "Second document, paragraph one.\n\nSecond document, paragraph two.",
+                "chunking_strategy": {"name": "paragraph", "params": {"min_chunk_size": 10}}
+            }
+        ]
+    }
+    response = client.post("/api/v1/sync-batch", headers=headers, json=payload)
+    response_data = response.json()
+
+    assert response.status_code == 200
+    assert response_data["total_documents_processed"] == 2
+    assert len(response_data["results"]) == 2
+    # Check results for the first document
+    assert response_data["results"][0]["parent_document_id"] == "doc1"
+    assert len(response_data["results"][0]["chunks"]) == 1
+    # Check results for the second document
+    assert response_data["results"][1]["parent_document_id"] == "doc2"
+    assert len(response_data["results"][1]["chunks"]) == 2
